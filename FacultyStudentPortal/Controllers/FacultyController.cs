@@ -437,6 +437,8 @@ namespace FacultyStudentPortal.Controllers
                 Console.WriteLine($"[GetAIInsights] Exception: {ex}");
                 return StatusCode(500, $"AI feedback generation failed: {ex.Message}");
             }
+            // testing CI trigger
+
         }
 
     }
