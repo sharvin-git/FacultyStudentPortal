@@ -50,6 +50,24 @@ namespace FacultyStudentPortal.Tests
             Assert.IsType<ViewResult>(result);
         }
 
+        [Fact]
+        public async Task CreateAssignment_Post_InvalidModel_Returns_View()
+        {
+            var mockDb = new Mock<IDbConnection>();
+            var mockEnv = new Mock<IWebHostEnvironment>();
+            HFService dummyService = null;
+
+            var controller = new FacultyController(mockDb.Object, mockEnv.Object, dummyService);
+            controller.ModelState.AddModelError("Title", "Required");
+
+            var model = new CreateAssignmentViewModel(); // Invalid because "Title" is missing
+
+            var result = await controller.CreateAssignment(model);
+
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal(model, viewResult.Model);
+        }
+
 
     }
 }
