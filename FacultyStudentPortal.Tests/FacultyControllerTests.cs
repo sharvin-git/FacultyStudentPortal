@@ -23,10 +23,12 @@ namespace FacultyStudentPortal.Tests
         {
             var mockDb = new Mock<IDbConnection>();
             var mockEnv = new Mock<IWebHostEnvironment>();
-            var mockHFService = new Mock<HFService>();
+            //var mockHFService = new Mock<HFService>();
+
+            HFService dummyHfService = null;
 
             // Now create the controller with mocks
-            var controller = new FacultyController(mockDb.Object, mockEnv.Object, mockHFService.Object);
+            var controller = new FacultyController(mockDb.Object, mockEnv.Object, dummyHfService);
 
             // Act
             var result = controller.FacultyDashboard();
