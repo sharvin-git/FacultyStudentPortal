@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using FacultyStudentPortal.Data.Interfaces;
 using FacultyStudentPortal.Models;
 using FacultyStudentPortal.Services;
 using FacultyStudentPortal.ViewModels;
@@ -24,21 +25,29 @@ namespace FacultyStudentPortal.Controllers
         private readonly IDbConnection _db;
         private readonly IWebHostEnvironment _env;
         private readonly IHFService _hfService;
+        private readonly IStudentRepository _studentRepo;
 
-        public FacultyController(IDbConnection db, IWebHostEnvironment env, IHFService hfService)
+        public FacultyController(IDbConnection db, IWebHostEnvironment env, IHFService hfService, IStudentRepository studentRepo)
         {
             _db = db;
             _env = env;
             _hfService = hfService;
+            _studentRepo = studentRepo;
         }
 
-        public async Task<IActionResult> StudentListFromSP()
-        {
-            var students = await _db.QueryAsync<StudentListViewModel>(
-                "sp_GetAllStudents",
-                commandType: CommandType.StoredProcedure
-            );
+        //public async Task<IActionResult> StudentListFromSP()
+        //{
+        //    var students = await _db.QueryAsync<StudentListViewModel>(
+        //        "sp_GetAllStudents",
+        //        commandType: CommandType.StoredProcedure
+        //    );
 
+        //    return View("StudentList", students);
+        //}
+
+        public async Task<IActionResult> GetAllStudents()
+        {
+            var students = await _studentRepo.GetAllStudentsAsync();
             return View("StudentList", students);
         }
 

@@ -1,3 +1,5 @@
+using FacultyStudentPortal.Data.Interfaces;
+using FacultyStudentPortal.Data.Repositiories;
 using FacultyStudentPortal.Models;
 using FacultyStudentPortal.Services;
 using Microsoft.AspNetCore.Identity;
@@ -42,6 +44,8 @@ namespace FacultyStudentPortal
 
             builder.Services.AddRazorPages();
 
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<StudentService>();
 
             builder.Services.AddSingleton<IHFService>(provider =>
             {
