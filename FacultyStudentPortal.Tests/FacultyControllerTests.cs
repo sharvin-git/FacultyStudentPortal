@@ -23,7 +23,6 @@ namespace FacultyStudentPortal.Tests
         {
             var mockDb = new Mock<IDbConnection>();
             var mockEnv = new Mock<IWebHostEnvironment>();
-            //var mockHFService = new Mock<HFService>();
 
             HFService dummyHfService = null;
 
@@ -37,47 +36,20 @@ namespace FacultyStudentPortal.Tests
             Assert.IsType<ViewResult>(result);
         }
 
-    //    [Fact]
-    //    public async Task ViewAssignments_ReturnsViewWithAssignments()
-    //    {
-    //        // Arrange
-    //        var mockDb = new Mock<IDbConnection>();
-    //        var mockEnv = new Mock<IWebHostEnvironment>();
-    //        var mockHFService = new Mock<HFService>();
+        [Fact]
+        public void CreateAssignment_Get_Returns_View()
+        {
+            var mockDb = new Mock<IDbConnection>();
+            var mockEnv = new Mock<IWebHostEnvironment>();
+            HFService dummyService = null;
 
-    //        var expectedAssignments = new List<AssignmentListViewModel>
-    //{
-    //    new AssignmentListViewModel { AssignmentId = 1, Title = "Test Assignment" }
-    //};
+            var controller = new FacultyController(mockDb.Object, mockEnv.Object, dummyService);
 
-    //        // Mock Dapper QueryAsync
-    //        mockDb.Setup(db => db.QueryAsync<AssignmentListViewModel>(
-    //            It.IsAny<string>(),
-    //            It.IsAny<object>(),
-    //            null, null, null))
-    //            .ReturnsAsync(expectedAssignments);
+            var result = controller.CreateAssignment();
 
-    //        var controller = new FacultyController(mockDb.Object, mockEnv.Object, mockHFService.Object);
+            Assert.IsType<ViewResult>(result);
+        }
 
-    //        // Mock identity
-    //        var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-    //        {
-    //    new Claim(ClaimTypes.NameIdentifier, "test-user-id")
-    //        }, "mock"));
-
-    //        controller.ControllerContext = new ControllerContext
-    //        {
-    //            HttpContext = new DefaultHttpContext { User = user }
-    //        };
-
-    //        // Act
-    //        var result = await controller.ViewAssignments();
-
-    //        // Assert
-    //        var viewResult = Assert.IsType<ViewResult>(result);
-    //        var model = Assert.IsAssignableFrom<IEnumerable<AssignmentListViewModel>>(viewResult.Model);
-    //        Assert.Single(model); // or Assert.Equal(expectedAssignments.Count, model.Count());
-    //    }
 
     }
 }
