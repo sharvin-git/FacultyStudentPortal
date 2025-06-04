@@ -211,18 +211,18 @@ namespace FacultyStudentPortal.Controllers
             return View(gradedAssignments);
         }
 
-        public async Task<IActionResult> StudentViewCriteria(int submissionId)
-        {
-            var result = await _db.QueryAsync<StudentViewCriteriaViewModel>(
-            "sp_StudentViewCriteria",
-            new { SubmissionId = submissionId },
-            commandType: CommandType.StoredProcedure);
+        //public async Task<IActionResult> StudentViewCriteria(int submissionId)
+        //{
+        //    var result = await _db.QueryAsync<StudentViewCriteriaViewModel>(
+        //    "sp_StudentViewCriteria",
+        //    new { SubmissionId = submissionId },
+        //    commandType: CommandType.StoredProcedure);
 
-            if (!result.Any())
-                return NotFound("No assessment data found.");
+        //    if (!result.Any())
+        //        return NotFound("No assessment data found.");
 
-            return View(result);
-        }
+        //    return View(result);
+        //}
 
         public async Task<IActionResult> LoadRubric(int submissionId)
         {
