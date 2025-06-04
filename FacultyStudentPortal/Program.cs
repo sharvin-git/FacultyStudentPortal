@@ -47,7 +47,8 @@ namespace FacultyStudentPortal
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 var hfToken = config["HuggingFace:Token"];
-                return new HFService(hfToken);
+                var httpClient = new HttpClient();
+                return new HFService(httpClient, hfToken);
             });
 
             var app = builder.Build();
