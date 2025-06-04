@@ -72,7 +72,39 @@ namespace FacultyStudentPortal.Tests
             Assert.Equal(model, viewResult.Model);
         }
 
-        
+        [Fact]
+        public async Task StudentListFromSP_Returns_StudentListView()
+        {
+            // Arrange
+            var mockDb = new Mock<IDbConnection>();
+            var mockEnv = new Mock<IWebHostEnvironment>();
+            HFService dummyService = null;
+            var mockStudentRepo = new Mock<IStudentRepository>();
+
+            var mockCommand = new Mock<IDbCommand>();
+            var fakeStudents = new List<StudentListViewModel>
+    {
+        new StudentListViewModel { FullName = "Sharvin", Email = "sharvin@example.com" }
+    };
+
+            mockDb.Setup(d => d.QueryAsync<StudentListViewModel>(
+                "sp_GetAllStudents",
+                null,
+                null,
+                null,
+                CommandType.StoredProcedure)).ReturnsAsync(fakeStudents);
+
+            var controller = new FacultyController(mockDb.Object, mockEnv.Object, dummyService, mockStudentRepo.Object);
+
+            // Act
+            var result = await controller.StudentListFromSP();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            var model = Assert.IsAssignableFrom<IEnumerable<StudentListViewModel>>(viewResult.Model);
+            Assert.Single(model);
+        }
+
 
 
 
