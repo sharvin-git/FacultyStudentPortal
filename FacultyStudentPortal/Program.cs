@@ -47,7 +47,7 @@ namespace FacultyStudentPortal
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<StudentService>();
 
-            builder.Services.AddSingleton<IHFService>(provider =>
+            builder.Services.AddSingleton(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 var hfToken = config["HuggingFace:Token"];

@@ -24,10 +24,10 @@ namespace FacultyStudentPortal.Controllers
 
         private readonly IDbConnection _db;
         private readonly IWebHostEnvironment _env;
-        private readonly IHFService _hfService;
+        private readonly HFService _hfService;
         private readonly IStudentRepository _studentRepo;
 
-        public FacultyController(IDbConnection db, IWebHostEnvironment env, IHFService hfService, IStudentRepository studentRepo)
+        public FacultyController(IDbConnection db, IWebHostEnvironment env, HFService hfService, IStudentRepository studentRepo)
         {
             _db = db;
             _env = env;

@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-public class HFService : IHFService
+public class HFService
 {
     private readonly HttpClient _http;
 
