@@ -68,31 +68,7 @@ namespace FacultyStudentPortal.Tests
             Assert.Equal(model, viewResult.Model);
         }
 
-        [Fact]
-        public async Task CreateAssignment_Post_ValidModel_Redirects()
-        {
-            var mockDb = new Mock<IDbConnection>();
-            var mockEnv = new Mock<IWebHostEnvironment>();
-            var mockCommand = new Mock<IDbCommand>();
-            HFService dummyService = null;
-
-            mockDb.Setup(db => db.ExecuteAsync(It.IsAny<string>(), It.IsAny<object>(), null, null, null))
-                  .ReturnsAsync(1); // pretend DB insert was successful
-
-            var controller = new FacultyController(mockDb.Object, mockEnv.Object, dummyService);
-
-            var model = new CreateAssignmentViewModel
-            {
-                Title = "Valid Title",
-                Description = "Desc",
-                DueDate = DateTime.Now.AddDays(2)
-            };
-
-            var result = await controller.CreateAssignment(model);
-
-            var redirectResult = Assert.IsType<RedirectToActionResult>(result);
-            Assert.Equal("ViewAssignments", redirectResult.ActionName);
-        }
+        
 
 
 

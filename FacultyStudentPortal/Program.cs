@@ -43,7 +43,7 @@ namespace FacultyStudentPortal
             builder.Services.AddRazorPages();
 
 
-            builder.Services.AddSingleton(provider =>
+            builder.Services.AddSingleton<IHFService>(provider =>
             {
                 var config = provider.GetRequiredService<IConfiguration>();
                 var hfToken = config["HuggingFace:Token"];

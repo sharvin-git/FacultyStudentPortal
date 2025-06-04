@@ -1,4 +1,5 @@
 ﻿
+using FacultyStudentPortal.Services;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -6,14 +7,16 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-public class HFService
+public class HFService : IHFService
 {
     private readonly HttpClient _http;
 
-    public HFService(string hfToken)
+    public HFService(HttpClient httpClient, string hfToken)
     {
         // LOG: check that the token is being passed in
         Console.WriteLine($"[HFService] Constructor received HF token: '{hfToken}'");
+
+        _http = httpClient;
 
         // Build an HttpClient pointed at the HF inference endpoint:
         var baseUri = "https://api-inference.huggingface.co/models/mistralai/Mistral-7B-Instruct-v0.3";

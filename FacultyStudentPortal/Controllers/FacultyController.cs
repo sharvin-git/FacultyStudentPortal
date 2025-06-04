@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using FacultyStudentPortal.Models;
+using FacultyStudentPortal.Services;
 using FacultyStudentPortal.ViewModels;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -22,9 +23,9 @@ namespace FacultyStudentPortal.Controllers
 
         private readonly IDbConnection _db;
         private readonly IWebHostEnvironment _env;
-        private readonly HFService _hfService;
+        private readonly IHFService _hfService;
 
-        public FacultyController(IDbConnection db, IWebHostEnvironment env, HFService hfService)
+        public FacultyController(IDbConnection db, IWebHostEnvironment env, IHFService hfService)
         {
             _db = db;
             _env = env;
@@ -437,8 +438,6 @@ namespace FacultyStudentPortal.Controllers
                 Console.WriteLine($"[GetAIInsights] Exception: {ex}");
                 return StatusCode(500, $"AI feedback generation failed: {ex.Message}");
             }
-            // testing CI trigger
-            // testing CI trigger
         }
 
     }
