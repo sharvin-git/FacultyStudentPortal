@@ -23,13 +23,20 @@ public class HFService : IHFService
         //var baseUri = "https://api-inference.huggingface.co/models/HuggingFaceH4/zephyr-7b-beta";
         Console.WriteLine($"[HFService] Setting BaseAddress to: {baseUri}");
 
-        _http = new HttpClient
-        {
-            BaseAddress = new Uri(baseUri),
-            Timeout = TimeSpan.FromSeconds(60)
-        };
+        //_http = new HttpClient
+        //{
+        //    BaseAddress = new Uri(baseUri),
+        //    Timeout = TimeSpan.FromSeconds(60)
+        //};
+        //_http.DefaultRequestHeaders.Authorization
+        //    = new AuthenticationHeaderValue("Bearer", hfToken);
+
+        _http = httpClient;
+        _http.BaseAddress = new Uri(baseUri);
+        _http.Timeout = TimeSpan.FromSeconds(60);
         _http.DefaultRequestHeaders.Authorization
             = new AuthenticationHeaderValue("Bearer", hfToken);
+
     }
 
     public async Task<string> GenerateFeedbackFromContentAsync(string prompt)
