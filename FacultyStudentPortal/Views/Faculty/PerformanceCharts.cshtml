@@ -1,0 +1,292 @@
+﻿
+@{
+    ViewData["Title"] = "Performance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #fdfcf9;
+    }
+
+    .chart-card {
+        background-color: #fff;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        animation: fadeIn 1s ease;
+        max-width: 90vw;
+        margin: auto;
+    }
+
+    #assignmentDropdown {
+        border: 2px solid #B89B5C;
+        font-size: 0.9rem;
+    }
+
+    .btn-outline-primary,
+    .btn-outline-success {
+        font-size: 0.85rem;
+        padding: 6px 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-primary:hover {
+            background-color: #B89B5C;
+            border-color: #B89B5C;
+            color: white;
+        }
+
+        .btn-outline-success:hover {
+            background-color: #6abf69;
+            border-color: #6abf69;
+            color: white;
+        }
+
+    .back-btn {
+        display: inline-block;
+        margin-bottom: 1rem;
+        background-color: #B89B5C;
+        color: white;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 16px;
+        font-size: 0.85rem;
+        font-weight: bold;
+        transition: 0.3s ease;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            background-color: #a38648;
+            color: white;
+            text-decoration: none;
+        }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    canvas {
+        width: 100% !important;
+        height: auto !important;
+    }
+
+    #chartContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        text-align: center;
+    }
+
+    #lineWrapper {
+        width: 100%;
+        max-width: 800px;
+        display: none;
+    }
+
+    #pieWrapper {
+        width: 100%;
+        max-width: 400px;
+        display: none;
+        overflow: hidden;
+        margin: auto;
+    }
+
+    #pieChart {
+        max-width: 100%;
+        height: auto !important;
+        max-height: 300px !important;
+        display: block;
+        margin: 0 auto;
+    }
+</style>
+
+<div class="container chart-card">
+    <a class="back-btn" href="/Faculty/FacultyDashboard">← Back</a>
+
+    <div class="text-center mb-3">
+        <div class="btn-group">
+            <button class="btn btn-outline-primary" id="btnLine">📈 Line Chart</button>
+            <button class="btn btn-outline-success" id="btnPie">🥧 Pie Chart</button>
+        </div>
+    </div>
+
+    <div class="form-group mb-3" id="assignmentDropdownContainer" style="display: none;">
+        <label for="assignmentDropdown" class="fw-bold text-secondary" style="font-size: 0.9rem;">Select Assignment:</label>
+        <select id="assignmentDropdown" class="form-control">
+            <option value="">-- Select Assignment --</option>
+            @foreach (var assignment in ViewBag.Assignments)
+            {
+                <option value="@assignment.AssignmentId">@assignment.Title</option>
+            }
+        </select>
+    </div>
+
+    <div id="chartContainer">
+        <div id="lineWrapper">
+            <canvas id="lineChart" style="max-height: 400px;"></canvas>
+        </div>
+        <div id="pieWrapper">
+            <canvas id="pieChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+<script>
+    let chart;
+
+    const lineCanvas = document.getElementById('lineChart');
+    const pieCanvas = document.getElementById('pieChart');
+    const lineWrapper = document.getElementById('lineWrapper');
+    const pieWrapper = document.getElementById('pieWrapper');
+
+    function loadChart(type, assignmentId = null) {
+        let url = (type === 'line')
+            ? '/Faculty/GetLineChartData'
+            : assignmentId
+                ? `/Faculty/GetPieChartData?assignmentId=${assignmentId}`
+                : null;
+
+        if (!url) {
+            alert("Please select an assignment for the pie chart!");
+            return;
+        }
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (chart) chart.destroy();
+
+                lineWrapper.style.display = 'none';
+                pieWrapper.style.display = 'none';
+
+                const ctx = type === 'line'
+                    ? lineCanvas.getContext('2d')
+                    : pieCanvas.getContext('2d');
+
+                if (type === 'line') {
+                    lineWrapper.style.display = 'block';
+                    chart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: data.map(d => d.assignmentTitle),
+                            datasets: [{
+                                label: 'Class Avg (%)',
+                                data: data.map(d => d.averageScore),
+                                borderColor: '#007bff',
+                                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                                fill: true,
+                                tension: 0.3,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#007bff',
+                                pointRadius: 4
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Average Scores Over Assignments',
+                                    font: { size: 14 }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => ctx.parsed.y.toFixed(2) + '%'
+                                    }
+                                },
+                                datalabels: {
+                                    anchor: 'end',
+                                    align: 'top',
+                                    formatter: val => val.toFixed(1) + '%',
+                                    font: {
+                                        size: 10,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        callback: val => val + '%'
+                                    }
+                                }
+                            }
+                        },
+                        plugins: [ChartDataLabels]
+                    });
+                } else {
+                    pieWrapper.style.display = 'block';
+                    chart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: data.map(d => d.gradeRange),
+                            datasets: [{
+                                data: data.map(d => d.count),
+                                backgroundColor: ['#28a745', '#ffc107', '#dc3545', '#6c757d']
+                            }]
+                        },
+                        options: {
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Grade Distribution',
+                                    font: { size: 14 }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: ctx => `${ctx.label}: ${ctx.parsed} students`
+                                    }
+                                },
+                                datalabels: {
+                                    color: '#fff',
+                                    font: {
+                                        weight: 'bold',
+                                        size: 12
+                                    },
+                                    formatter: val => `${val}`
+                                }
+                            }
+                        },
+                        plugins: [ChartDataLabels]
+                    });
+                }
+            });
+    }
+
+    document.getElementById('btnLine').addEventListener('click', () => {
+        document.getElementById('assignmentDropdownContainer').style.display = 'none';
+        loadChart('line');
+    });
+
+    document.getElementById('btnPie').addEventListener('click', () => {
+        document.getElementById('assignmentDropdownContainer').style.display = 'block';
+        if (chart) chart.destroy();
+        lineWrapper.style.display = 'none';
+        pieWrapper.style.display = 'none';
+    });
+
+    document.getElementById('assignmentDropdown').addEventListener('change', () => {
+        const id = document.getElementById('assignmentDropdown').value;
+        if (id) loadChart('pie', id);
+    });
+
+    window.onload = () => loadChart('line');
+</script>
+

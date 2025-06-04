@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewData["Title"] = "My Performance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <a href="@Url.Action("StudentDashboard", "Student")" class="btn btn-outline-warning back-btn">
+            ← Back to Dashboard
+        </a>
+        <h2 class="fw-bold fancy-heading mb-0 text-center flex-grow-1">
+            My Performance Over Assignments
+        </h2>
+        <div style="width: 120px;"></div> 
+    </div>
+
+    <div class="chart-wrapper mx-auto p-4 shadow rounded-4 border border-warning-subtle bg-light-subtle">
+        <canvas id="studentPerformanceChart" height="140"></canvas>
+    </div>
+</div>
+
+<style>
+    .fancy-heading {
+        color: #B89B5C;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        user-select: none;
+    }
+
+    .chart-wrapper {
+        max-width: 700px;
+        background: linear-gradient(145deg, #f8f6f1, #ffffff);
+        box-shadow: 0 8px 24px rgba(184, 155, 92, 0.2);
+        border-radius: 16px;
+        transition: all 0.4s ease-in-out;
+    }
+
+    canvas {
+        transition: transform 0.3s ease-in-out;
+    }
+
+        canvas:hover {
+            transform: scale(1.01);
+        }
+
+    .back-btn {
+        font-weight: 500;
+        border-radius: 30px;
+        padding: 6px 20px;
+        transition: all 0.3s ease;
+        color: #B89B5C;
+        border-color: #B89B5C;
+        background-color: #fff;
+        flex-shrink: 0; /* prevent shrinking */
+        box-shadow: 0 2px 6px rgba(184, 155, 92, 0.3);
+        user-select: none;
+    }
+
+        .back-btn:hover {
+            background-color: #B89B5C;
+            color: #fff;
+            box-shadow: 0 0 10px rgba(184, 155, 92, 0.6);
+            text-decoration: none;
+        }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+
+<script>
+    window.onload = () => {
+        fetch('/Student/GetStudentLineChartData')
+            .then(res => res.json())
+            .then(data => {
+                const labels = data.map(d => d.assignmentTitle);
+                const scores = data.map(d => d.percentage);
+
+                const ctx = document.getElementById('studentPerformanceChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'My Score (%)',
+                            data: scores,
+                            borderColor: '#B89B5C',
+                            backgroundColor: 'rgba(184, 155, 92, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 6,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#B89B5C',
+                            pointHoverRadius: 7,
+                            pointHoverBackgroundColor: '#B89B5C',
+                            pointHoverBorderColor: '#fff',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: '#fff',
+                                titleColor: '#B89B5C',
+                                bodyColor: '#333',
+                                borderColor: '#B89B5C',
+                                borderWidth: 1,
+                                callbacks: {
+                                    label: ctx => ctx.parsed.y.toFixed(2) + '%'
+                                }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'top',
+                                formatter: val => val.toFixed(1) + '%',
+                                font: {
+                                    weight: 'bold'
+                                },
+                                color: '#4b3e2d'
+                            },
+                            legend: {
+                                labels: {
+                                    color: '#4b3e2d',
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#4b3e2d',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                ticks: {
+                                    callback: val => val + '%',
+                                    color: '#4b3e2d',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            }
+                        }
+                    },
+                    plugins: [ChartDataLabels]
+                });
+            });
+    };
+</script>

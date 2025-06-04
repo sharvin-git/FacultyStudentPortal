@@ -1,0 +1,7 @@
+This is a sample student submission for the Software Engineering Assessment.
+
+The project involves building a web application using ASP.NET Core MVC with a layered architecture. The student has implemented the user registration and login modules with role-based access control.
+
+The code is well-organized, and comments are provided for clarity. However, some parts lack exception handling, which could cause runtime errors. Also, there is room for improvement in the UI design for better user experience.
+
+Overall, the submission shows a good understanding of the framework and coding principles but could benefit from more robust error management and UI polish.

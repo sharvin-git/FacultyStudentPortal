@@ -1,0 +1,101 @@
+﻿
+@using FacultyStudentPortal.ViewModels
+@model IEnumerable<ViewSubmissionsViewModel>
+
+@{
+    ViewData["Title"] = "View Submissions";
+    var serialNo = 1;
+}
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">📂 Submissions Overview</h2>
+        <a asp-action="AssessmentOverview" class="btn btn-outline-dark shadow-sm">
+            ← Back to Assessments
+        </a>
+    </div>
+
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-body p-4">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 text-center">
+                    <thead class="table-light border-bottom">
+                        <tr>
+                            <th class="text-uppercase small">#</th>
+                            <th class="text-uppercase small">Student Name</th>
+                            <th class="text-uppercase small">Email</th>
+                            <th class="text-uppercase small">Submitted On</th>
+                            <th class="text-uppercase small">Total Mark</th>
+                            <th class="text-uppercase small">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@serialNo</td>
+                                <td class="fw-semibold">@item.FullName</td>
+                                <td>@item.Email</td>
+                                <td>@item.SubmittedAt.ToString("dd MMM yyyy hh:mm tt")</td>
+                                <td>
+                                    @if (item.TotalMark.HasValue)
+                                    {
+                                        <span class="badge bg-success-subtle text-success fw-medium">
+                                            @($"{item.TotalMark}/{item.TotalScore}")
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.TotalMark.HasValue)
+                                    {
+                                        <span class="badge bg-light text-success fw-semibold">Assessed</span>
+                                    }
+                                    else
+                                    {
+                                        <a asp-action="AssessSubmission"
+                                           asp-route-submissionId="@item.SubmissionId"
+                                           class="btn btn-sm btn-outline-primary shadow-sm px-3">
+                                            Assess
+                                        </a>
+                                    }
+                                </td>
+                            </tr>
+                            serialNo++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    h2 {
+        font-family: 'Segoe UI', sans-serif;
+        color: #343a40;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .btn-outline-dark:hover {
+        background-color: #B89B5C;
+        border-color: #B89B5C;
+        color: white;
+    }
+
+    .badge.bg-success-subtle {
+        background-color: #e6f4ea;
+        border: 1px solid #c7e3d2;
+    }
+
+    .badge.bg-light {
+        background-color: #f3f3f3;
+    }
+</style>

@@ -1,0 +1,26 @@
+﻿@using FacultyStudentPortal.ViewModels
+@model List<StudentViewCriteriaViewModel>
+
+@{
+    var title = Model.First().AssignmentTitle;
+    var gradedBy = Model.First().GradedBy;
+}
+
+<h2>@title</h2> 
+<p><strong>Graded By:</strong> @gradedBy</p>
+<table class="table"> 
+    <thead> 
+        <tr> 
+            <th>Criteria</th> 
+            <th>Max Score</th>
+            <th>Your Score</th>
+            <th>Remark</th> 
+        </tr> 
+        </thead> 
+        <tbody> 
+            @foreach (var item in Model) {
+
+                <tr> <td>@item.CriterionName</td> <td>@item.MaxScore</td> <td>@item.Score</td> <td>@item.Remark</td> </tr>
+}
+ </tbody> 
+ </table>

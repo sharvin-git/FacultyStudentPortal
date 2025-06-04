@@ -1,0 +1,156 @@
+﻿
+@using FacultyStudentPortal.ViewModels
+@model IEnumerable<ViewGradedAssignmentsViewModel>
+
+@{
+    ViewData["Title"] = "Graded Assignments";
+}
+
+<div class="container mt-5">
+    <div class="d-flex align-items-center justify-content-center position-relative mb-4">
+        <a href="/Student/StudentDashboard" class="btn btn-outline-dark glow-button position-absolute start-0">
+            &larr; Back to Dashboard
+        </a>
+        <h2 class="text-center mb-0 fw-bold wow-text">Your Graded Assignments</h2>
+    </div>
+
+    <table class="table table-bordered table-hover shadow-sm rounded overflow-hidden classy-table">
+        <thead class="table-dark">
+            <tr>
+                <th>Assignment Title</th>
+                <th>Grade</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var assignment in Model)
+            {
+                <tr>
+                    <td class="align-middle">@assignment.Title</td>
+                    <td class="align-middle"><strong>@assignment.TotalMark</strong> / @assignment.TotalScore</td>
+                    <td class="align-middle text-center">
+                        <button class="btn btn-outline-dark btn-sm toggle-rubric glow-button" data-submission-id="@assignment.SubmissionId">
+                            ▼ View Graded Rubric
+                        </button>
+                    </td>
+                </tr>
+                <tr class="rubric-row" id="rubric-row-@assignment.SubmissionId" style="display: none;">
+                    <td colspan="3" class="bg-light-subtle p-0">
+                        <div class="rubric-container p-3" id="rubric-@assignment.SubmissionId">
+                            <em class="text-muted">Loading...</em>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .wow-text {
+        color: #B89B5C;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .classy-table {
+        background-color: white;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .glow-button {
+        border-color: #B89B5C;
+        color: #B89B5C;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .glow-button:hover {
+            background-color: #B89B5C;
+            color: white;
+            box-shadow: 0 0 10px #B89B5C80;
+            transform: scale(1.05);
+        }
+
+    .rubric-container {
+        background: linear-gradient(145deg, #ffffff, #f1f1f1);
+        border: 2px solid #e4d5b8;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 8px 24px rgba(184, 155, 92, 0.15);
+        font-family: 'Segoe UI', sans-serif;
+        font-size: 0.95rem;
+        transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+        .rubric-container.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+        }
+
+        .rubric-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .rubric-container table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+
+        .rubric-container th, .rubric-container td {
+            border: 1px solid #ddd;
+            padding: 0.5rem 0.75rem;
+            text-align: left;
+        }
+
+        .rubric-container th {
+            background-color: #f5f0e3;
+            color: #4b3e2d;
+            font-weight: bold;
+        }
+
+        .rubric-container td {
+            background-color: #fff;
+        }
+
+        .rubric-container em {
+            font-style: italic;
+            color: #888;
+        }
+</style>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.toggle-rubric').click(function () {
+                const btn = $(this);
+                const submissionId = btn.data('submission-id');
+                const row = $('#rubric-row-' + submissionId);
+                const container = $('#rubric-' + submissionId);
+
+                if (row.is(':visible')) {
+                    container.removeClass('visible').addClass('hidden');
+                    setTimeout(() => {
+                        row.slideUp(300);
+                        btn.html('▼ View Graded Rubric');
+                    }, 300);
+                } else {
+                    row.slideDown(300, function () {
+                        if (!container.data('loaded')) {
+                            $.get('/Student/LoadRubric', { submissionId: submissionId }, function (html) {
+                                container.html(html);
+                                container.data('loaded', true);
+                            }).fail(function () {
+                                container.html('<div class="text-danger">Failed to load rubric.</div>');
+                            });
+                        }
+                        container.removeClass('hidden').addClass('visible');
+                    });
+                    btn.html('▲ Hide Graded Rubric');
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,121 @@
+﻿
+@model FacultyStudentPortal.ViewModels.SubmitAssignmentViewModel
+
+@{
+    ViewData["Title"] = "Submit Assignment";
+}
+
+<div class="container mt-5 mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark-emphasis">Submit Assignment</h2>
+        <a href="@Url.Action("StudentViewAssignments", "Student")" class="btn btn-outline-secondary rounded-pill shadow-sm">
+            ← Back to Assignments
+        </a>
+    </div>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger mb-3" })
+
+    <div class="card shadow-lg p-4 border-0 rounded-4 mb-4" style="background-color: #fff9f0;">
+        <h4 class="text-uppercase fw-semibold mb-2">@Model.Title</h4>
+        <p class="text-muted">@Model.Description</p>
+        <p><strong>Due:</strong> <span class="text-danger">@Model.DueDate.ToString("dd MMM yyyy, hh:mm tt")</span></p>
+
+        @if (!string.IsNullOrEmpty(Model.FacultyUploadedFilePath))
+        {
+            <p>
+                <strong>Attached File:</strong>
+                <a href="@Model.FacultyUploadedFilePath" target="_blank" class="btn btn-sm btn-outline-dark rounded-pill px-3">
+                    📎 Download
+                </a>
+            </p>
+        }
+    </div>
+
+    @if (Model.SubmittedAt.HasValue)
+    {
+        <div class="alert alert-success shadow-sm rounded-3 fw-semibold">
+            You submitted this assignment on <strong>@Model.SubmittedAt.Value.ToString("dd MMM yyyy hh:mm tt")</strong>.
+        </div>
+    }
+    else
+    {
+        <form asp-action="SubmitAssignment" asp-controller="Student" method="post" enctype="multipart/form-data" id="submissionForm" class="p-4 shadow-lg bg-white rounded-4">
+            <input type="hidden" asp-for="AssignmentId" />
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Submission Type</label><br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="SubmissionType" value="file" checked onchange="toggleInputs()" />
+                    <label class="form-check-label">File Upload</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="SubmissionType" value="link" onchange="toggleInputs()" />
+                    <label class="form-check-label">Link Submission</label>
+                </div>
+            </div>
+
+            <div id="fileInputDiv" class="mb-3">
+                <label class="form-label">Upload File</label>
+                <input type="file" asp-for="StudentUpload" class="form-control shadow-sm" />
+            </div>
+
+            <div id="linkInputDiv" class="mb-3" style="display:none;">
+                <label class="form-label">Paste Link</label>
+                <input type="url" asp-for="LinkSubmission" class="form-control shadow-sm" placeholder="https://yourlink.com" />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Comment (Optional)</label>
+                <textarea asp-for="Comment" class="form-control shadow-sm" rows="3" placeholder="Any notes or explanations..."></textarea>
+            </div>
+
+            <div id="clientErrorMsg" class="text-danger mb-3"></div>
+
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary px-4 py-2 shadow">Submit</button>
+            </div>
+
+        </form>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function toggleInputs() {
+            const selectedRadio = document.querySelector('input[name="SubmissionType"]:checked');
+            const type = selectedRadio ? selectedRadio.value : null;
+
+            const fileDiv = document.getElementById('fileInputDiv');
+            const linkDiv = document.getElementById('linkInputDiv');
+            fileDiv.style.display = (type === "file") ? "block" : "none";
+            linkDiv.style.display = (type === "link") ? "block" : "none";
+
+            const clientError = document.getElementById('clientErrorMsg');
+            if (clientError) clientError.textContent = "";
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            toggleInputs();
+            const form = document.getElementById("submissionForm");
+            if (!form) return;
+
+            form.addEventListener("submit", function (e) {
+                const clientError = document.getElementById('clientErrorMsg');
+                if (clientError) clientError.textContent = "";
+
+                const submissionType = document.querySelector('input[name="SubmissionType"]:checked')?.value;
+                const fileField = document.querySelector('input[name="StudentUpload"]');
+                const linkInput = document.querySelector('input[name="LinkSubmission"]');
+                const linkText = linkInput?.value.trim();
+
+                if (submissionType === "file" && (!fileField || fileField.files.length === 0)) {
+                    e.preventDefault();
+                    if (clientError) clientError.textContent = "Please upload a file or switch to Link Submission.";
+                } else if (submissionType === "link" && !linkText) {
+                    e.preventDefault();
+                    if (clientError) clientError.textContent = "Please type a valid link or switch to File Upload.";
+                }
+            });
+        });
+    </script>
+}

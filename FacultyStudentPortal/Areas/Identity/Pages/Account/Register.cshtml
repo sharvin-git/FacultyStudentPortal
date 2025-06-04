@@ -1,0 +1,174 @@
+﻿
+@page
+@model RegisterModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Register";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - AUE Faculty-Student Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-box {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(25px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .aue-header {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 2px 2px 5px #000000aa;
+            margin-bottom: 1.5rem;
+            animation: glow 2.5s ease-in-out infinite alternate;
+        }
+
+        @@keyframes glow {
+            from {
+                text-shadow: 0 0 10px #fff, 0 0 20px #007bff;
+            }
+
+            to {
+                text-shadow: 0 0 20px #fff, 0 0 40px #1e90ff;
+            }
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .form-control {
+            background-color: rgba(0, 0, 0, 0.3);
+            color: #fff;
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+            .form-control::placeholder {
+                color: #ccc;
+            }
+
+        .form-floating > label {
+            color: #ddd;
+        }
+
+        .btn-primary {
+            background-color: #003865;
+            border: none;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0054a6;
+            }
+
+        .form-check-label,
+        label {
+            color: #fff;
+        }
+
+        .alert-success {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="register-box">
+        <div class="aue-header">AUE Portal - Register</div>
+
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+            <!-- Centered Role Selection -->
+            <div class="text-center mb-4">
+                <label class="form-label text-white">Select Role:</label><br />
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="student" name="Input.Role" value="Student" />
+                    <label class="form-check-label" for="student">Student</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" id="faculty" name="Input.Role" value="Faculty" />
+                    <label class="form-check-label" for="faculty">Faculty</label>
+                </div>
+            </div>
+
+            <!-- Form Fields -->
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.FullName" class="form-control" placeholder="Full Name" />
+                        <label asp-for="Input.FullName">Full Name</label>
+                        <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
+                        <label asp-for="Input.Email">Email</label>
+                        <span asp-validation-for="Input.Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-6">
+                    <div class="form-floating mb-3">
+                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="Password" />
+                        <label asp-for="Input.Password">Password</label>
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-floating mb-4">
+                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="Confirm Password" />
+                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                        <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Centered Register Button -->
+            <div class="text-center mt-3">
+                <button id="registerSubmit" type="submit" class="btn btn-lg btn-primary px-5">Register</button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

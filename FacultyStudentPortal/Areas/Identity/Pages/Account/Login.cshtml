@@ -1,0 +1,151 @@
+﻿
+@page
+@model LoginModel
+@{
+    Layout = null;
+    var logoutSuccess = Request.Query["logoutSuccess"];
+    ViewData["Title"] = "Log in";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - AUE Faculty-Student Portal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .login-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .aue-header {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            text-shadow: 2px 2px 5px #000000aa;
+            margin-bottom: 1.8rem;
+            animation: glow 2.5s ease-in-out infinite alternate;
+        }
+
+        @@keyframes glow {
+            from
+
+        {
+            text-shadow: 0 0 10px #fff, 0 0 20px #007bff, 0 0 30px #007bff;
+        }
+
+        to {
+            text-shadow: 0 0 20px #fff, 0 0 40px #1e90ff, 0 0 60px #1e90ff;
+        }
+
+        }
+
+        @@keyframes fadeInUp {
+            from
+
+        {
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        }
+
+        .form-control {
+            background-color: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: #003865;
+            border: none;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+            .btn-primary:hover {
+                background-color: #0054a6;
+            }
+
+        .text-center a {
+            color: #ffffffcc;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+            .text-center a:hover {
+                color: #ffffff;
+            }
+
+        .alert-success {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <div class="aue-header">AUE Portal</div>
+
+        @if (logoutSuccess == "true")
+        {
+            <div class="alert alert-success" role="alert">
+                You have successfully logged out.
+            </div>
+        }
+
+        <form id="account" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                <label asp-for="Input.Email" class="form-label">Email</label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-floating mb-4">
+                <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="password" />
+                <label asp-for="Input.Password" class="form-label">Password</label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+
+            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary mb-3">Log in</button>
+
+            <p class="text-center mt-2">
+                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+            </p>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+</body>
+</html>

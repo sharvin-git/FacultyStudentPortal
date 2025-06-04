@@ -1,0 +1,106 @@
+🎯 TASK 1: Faculty-Student Assignment & Assessment Portal
+🔧 WHAT YOU NEED TO BUILD (High-Level):
+A .NET Core MVC full-stack web app where:
+
+Faculty can log in, create assignments, grade them, and see student performance charts.
+
+Students can log in, submit assignments, view their grades, and see performance charts.
+
+🧠 SKILLS THEY’RE TESTING:
+SQL + Stored Procedures only (MS SQL Server)
+
+MVC Architecture (Model-View-Controller)
+
+Dapper (instead of Entity Framework!)
+
+AJAX + Bootstrap + jQuery (for interactivity)
+
+Chart.js or Power BI (for visualizing grades)
+
+Unit Testing (test service and data logic)
+
+CI/CD (GitHub Actions or Azure DevOps)
+
+Bonus: Integrate something like OpenAI for auto-feedback
+
+👩‍🏫 FUNCTIONAL REQUIREMENTS (Let’s decode):
+👨‍🏫 FACULTY INTERFACE:
+Login with Role: Use ASP.NET Identity or custom roles (UserType = Faculty)
+
+Dashboard Includes:
+
+Student List (from DB)
+
+Create Assignment: Fields: Title, Description, Due Date, Upload File
+
+Create Assessment: Link to assignment, add grading criteria (like Clarity, Completeness), scoring range (1–10), and remarks
+
+Performance Charts: Show how students are doing — line/pie chart
+
+👩‍🎓 STUDENT INTERFACE:
+Login with Role: Student login
+
+Dashboard Includes:
+
+View & Submit Assignments: Before deadline, file/link submission
+
+View Grades: Criteria, Score, Remarks
+
+Performance Charts: Just their own
+
+🧱 TECHNICAL SETUP PLAN:
+✅ Backend
+ASP.NET Core 6+ (MVC)
+
+Use Dapper for DB Access (NO EF! ONLY STORED PROCEDURES)
+
+SQL Server as DB
+
+Roles via Identity or a manual table (e.g., Users table with a Role column)
+
+✅ Frontend
+Razor Views + Bootstrap (for design)
+
+jQuery + AJAX for dynamic stuff (like submitting assignments, loading charts)
+
+Chart.js or Power BI embedded (your choice — Chart.js is easier for now)
+
+✅ Database
+Tables:
+
+Users (UserID, Name, Email, PasswordHash, Role)
+
+Assignments (AssignmentID, FacultyID, Title, Desc, DueDate, FilePath)
+
+Submissions (SubmissionID, AssignmentID, StudentID, FilePath, Timestamp)
+
+Assessments (AssessmentID, AssignmentID)
+
+AssessmentCriteria (CriteriaID, AssessmentID, CriterionName, MaxScore)
+
+Grades (GradeID, SubmissionID, CriteriaID, Score, Remarks)
+
+ALL data access via Stored Procedures.
+No raw SQL in the code. No LINQ. No EF.
+
+✅ Unit Testing
+Test service logic (e.g., creating assignment)
+
+Test DB layer using mocks
+
+✅ CI/CD
+Host your code on GitHub
+
+Add GitHub Actions workflow file:
+
+Build + Unit Test (YAML file)
+
+Optional: Deploy to Azure
+
+✅ BONUS IDEA: OpenAI API
+When grading: auto-generate remarks like:
+
+“Well-written, but lacks depth in clarity”
+
+You can do this via a simple call to OpenAI’s API (I’ll help with the code if you choose to add this)
+

@@ -1,0 +1,89 @@
+﻿
+@page
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = "Registration Confirmation";
+    var loginUrl = Url.Page("/Account/Login", new { area = "Identity" });
+}
+
+<style>
+    .confirmation-container {
+        max-width: 600px;
+        margin: 80px auto;
+        background: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        font-family: 'Segoe UI', sans-serif;
+    }
+
+    .confirmation-container h1 {
+        font-size: 2.2rem;
+        color: #4a4a4a;
+        margin-bottom: 20px;
+    }
+
+    .confirmation-container .message {
+        font-size: 1.1rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    .confirmation-container .countdown {
+        font-weight: bold;
+        color: #b89b5c;
+        font-size: 1.2rem;
+    }
+
+    .confirmation-container a {
+        color: #b89b5c;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .confirmation-container a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="confirmation-container">
+    <h1>@ViewData["Title"]</h1>
+
+    @if (Model.IsEmailConfirmed)
+    {
+        <div class="message">
+            ✅ Your email has been successfully confirmed!
+        </div>
+
+        <div class="message">
+            Redirecting you to the login page in
+            <span id="countdown" class="countdown">5</span> seconds...
+        </div>
+
+        <p>
+            If you're not redirected automatically,
+            <a href="@loginUrl">click here to login</a>.
+        </p>
+
+        <script>
+            let countdown = 5;
+            const countdownSpan = document.getElementById("countdown");
+
+            const interval = setInterval(() => {
+                countdown--;
+                countdownSpan.textContent = countdown;
+                if (countdown <= 0) {
+                    clearInterval(interval);
+                    window.location.href = "@loginUrl";
+                }
+            }, 1000);
+        </script>
+    }
+    else
+    {
+        <div class="message">
+            📬 Please check your email and click the confirmation link to activate your account.
+        </div>
+    }
+</div>

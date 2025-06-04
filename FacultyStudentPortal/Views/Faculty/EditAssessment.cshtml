@@ -1,0 +1,255 @@
+﻿
+@using FacultyStudentPortal.ViewModels
+@model EditAssessmentViewModel
+
+@{
+    ViewData["Title"] = "Edit Assessment Criteria";
+}
+
+@section Styles {
+    <style>
+        body {
+            background: #faf8f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #4a4a4a;
+        }
+
+        .btn-back-overview {
+            background-color: #B89B5C;
+            color: white !important;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 20px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 30px;
+            box-shadow: 0 3px 6px rgba(184,155,92,.4);
+            transition: all 0.3s ease;
+        }
+
+            .btn-back-overview:hover {
+                background-color: #a28345;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(162,131,69,.6);
+                color: white !important;
+                text-decoration: none;
+            }
+
+        h2 {
+            margin-bottom: 30px;
+            color: #5a5a5a;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        form {
+            background: white;
+            padding: 30px 35px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+            max-width: 700px;
+            margin: auto;
+        }
+
+        #criteria-container {
+            margin-bottom: 40px;
+        }
+
+        .criteria-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+            .criteria-row input[type="text"] {
+                flex: 1 1 60%;
+                padding: 10px 14px;
+                border: 1.8px solid #ccc;
+                border-radius: 6px;
+                font-size: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+                .criteria-row input[type="text"]:focus {
+                    border-color: #B89B5C;
+                    outline: none;
+                    box-shadow: 0 0 8px #b89b5c88;
+                }
+
+            .criteria-row input[type="number"] {
+                width: 120px;
+                padding: 10px 14px;
+                border: 1.8px solid #ccc;
+                border-radius: 6px;
+                font-size: 1rem;
+                transition: border-color 0.3s ease;
+            }
+
+                .criteria-row input[type="number"]:focus {
+                    border-color: #B89B5C;
+                    outline: none;
+                    box-shadow: 0 0 8px #b89b5c88;
+                }
+
+        .delete-btn {
+            background: #e74c3c;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+            transition: background 0.25s ease, transform 0.25s ease;
+        }
+
+            .delete-btn:hover {
+                background: #c0392b;
+                transform: scale(1.2) rotate(15deg);
+                box-shadow: 0 4px 12px rgba(192, 57, 43, 0.7);
+            }
+
+        .btn-add {
+            background: #B89B5C;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            padding: 8px 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(184, 155, 92, 0.5);
+            transition: background 0.3s ease, transform 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 600;
+            user-select: none;
+            margin-bottom: 20px;
+        }
+
+            .btn-add:hover {
+                background: #a28345;
+                transform: translateY(-3px) scale(1.05);
+                box-shadow: 0 8px 24px rgba(162, 131, 69, 0.7);
+            }
+
+            .btn-add svg {
+                fill: white;
+                width: 18px;
+                height: 18px;
+            }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .btn-save {
+            background-color: #4CAF50;
+            border: none;
+            color: white !important;
+            font-weight: 700;
+            padding: 12px 28px;
+            font-size: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.6);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+            .btn-save:hover {
+                background-color: #3b8b3b;
+                transform: translateY(-2px);
+            }
+    </style>
+}
+
+<a href="@Url.Action("AssessmentOverview", "Faculty")" class="btn-back-overview">← Back to Assessments</a>
+
+<h2>Edit Criteria for @Model.AssignmentTitle</h2>
+
+<form asp-action="EditAssessment" method="post" onsubmit="return validateForm()">
+    <input type="hidden" asp-for="AssignmentId" />
+
+    <div id="criteria-container">
+        @for (int i = 0; i < Model.Criteria.Count; i++)
+        {
+            <div class="criteria-row">
+                <input type="text"
+                       name="Criteria[@i].CriterionName"
+                       value="@Model.Criteria[i].CriterionName"
+                       placeholder="Criterion Name"
+                       required />
+                <input type="number"
+                       name="Criteria[@i].MaxScore"
+                       value="@(Model.Criteria[i].MaxScore == 0 ? "" : Model.Criteria[i].MaxScore.ToString())"
+                       placeholder="Max Score"
+                       min="1" required />
+                <button type="button" class="delete-btn" onclick="this.parentElement.remove(); updateDeleteButtons()">✖</button>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn-add" onclick="addCriterion()" aria-label="Add Criterion">
+        <svg viewBox="0 0 24 24"><path d="M19 13H13V19H11V13H5V11H11V5H13V11H19V13Z" /></svg>
+        Add Criterion
+    </button>
+
+    <div class="form-actions">
+        <button type="submit" class="btn-save">Save Changes</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        let idx = @Model.Criteria.Count;
+
+        function updateDeleteButtons() {
+            const buttons = document.querySelectorAll('.delete-btn');
+            if (buttons.length <= 1) {
+                buttons.forEach(btn => btn.style.display = 'none');
+            } else {
+                buttons.forEach(btn => btn.style.display = 'inline-block');
+            }
+        }
+
+        function addCriterion() {
+            const c = document.createElement('div');
+            c.className = 'criteria-row';
+            c.innerHTML = `
+                <input type="text" name="Criteria[${idx}].CriterionName" placeholder="Criterion Name" required />
+                <input type="number" name="Criteria[${idx}].MaxScore" placeholder="Max Score" min="1" required />
+                <button type="button" class="delete-btn" onclick="this.parentElement.remove(); updateDeleteButtons()">✖</button>
+            `;
+            document.getElementById('criteria-container').appendChild(c);
+            idx++;
+            updateDeleteButtons();
+        }
+
+        function validateForm() {
+            const rows = document.querySelectorAll('.criteria-row');
+            if (rows.length === 0) {
+                alert('Add at least one criterion');
+                return false;
+            }
+            for (let i = 0; i < rows.length; i++) {
+                const nameInput = rows[i].querySelector('input[type="text"]'),
+                      scoreInput = rows[i].querySelector('input[type="number"]');
+                if (!nameInput || !nameInput.value.trim() || !scoreInput || !scoreInput.value || scoreInput.value < 1) {
+                    alert('Fill all rows correctly');
+                    return false;
+                }
+                nameInput.name = `Criteria[${i}].CriterionName`;
+                scoreInput.name = `Criteria[${i}].MaxScore`;
+            }
+            return true;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDeleteButtons();
+        });
+    </script>
+}

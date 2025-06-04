@@ -1,0 +1,99 @@
+﻿
+@using FacultyStudentPortal.ViewModels
+@model IEnumerable<AssessmentOverviewViewModel>
+
+@{
+    ViewData["Title"] = "Assessments";
+}
+
+@section Styles {
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .btn-back-dashboard {
+            background-color: #B89B5C;
+            color: white !important;
+            font-weight: 600;
+            border-radius: 6px;
+            padding: 6px 16px;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+            .btn-back-dashboard:hover {
+                background-color: #a28345;
+                transform: translateY(-1px);
+                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+                color: white !important;
+                text-decoration: none;
+            }
+
+        h2 {
+            color: #6c757d;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        table {
+            box-shadow: 0 0 10px rgba(184, 155, 92, 0.2);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th {
+            background-color: #B89B5C;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .action-btn {
+            margin: 0 4px;
+        }
+    </style>
+}
+
+<a href="@Url.Action("FacultyDashboard", "Faculty")" class="btn-back-dashboard">← Back to Dashboard</a>
+
+<h2>Assessments</h2>
+
+<table class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Due</th>
+            <th>Submissions</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model)
+        {
+            <tr>
+                <td>@a.Title</td>
+                <td>@a.DueDate.ToString("dd MMM yyyy hh:mm tt")</td>
+                <td>@a.SubmissionCount</td>
+                <td>
+                    @if (a.HasCriteria && a.SubmissionCount > 0)
+                    {
+                        <a asp-action="ViewSubmissions" asp-route-id="@a.AssignmentId" class="btn btn-sm btn-success action-btn">View Submissions</a>
+                    }
+                    @if (!a.HasCriteria)
+                    {
+                        <a asp-action="CreateAssessment" asp-route-assignmentId="@a.AssignmentId" class="btn btn-primary btn-sm action-btn">Create Criteria</a>
+                    }
+                    else
+                    {
+                        <a asp-action="EditAssessment" asp-route-assignmentId="@a.AssignmentId" class="btn btn-warning btn-sm action-btn">Edit Criteria</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
