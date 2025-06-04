@@ -18,8 +18,8 @@ namespace FacultyStudentPortal.Tests
         public async Task GenerateFeedbackFromContentAsync_ReturnsExpectedFeedback()
         {
             // Arrange
-            var expectedText = "Feedback: Great job on your assignment!";
-            var fakeJson = $"[{{\"generated_text\":\"{expectedText}\"}}]";
+            var expectedText = "The student has shown good understanding...";
+            var fakeJson = "[{\"generated_text\": \"" + expectedText + "\"}]";
 
             var mockHandler = new Mock<HttpMessageHandler>();
             mockHandler
@@ -42,7 +42,7 @@ namespace FacultyStudentPortal.Tests
             var result = await service.GenerateFeedbackFromContentAsync("Some prompt");
 
             // Assert
-            Assert.Equal("Great job on your assignment!", result);
+            Assert.Equal(expectedText, result);
         }
     }
 
