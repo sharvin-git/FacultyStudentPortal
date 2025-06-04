@@ -45,7 +45,7 @@ namespace FacultyStudentPortal.Controllers
         //    return View("StudentList", students);
         //}
 
-        public async Task<IActionResult> GetAllStudents()
+        public async Task<IActionResult> StudentListFromSP()
         {
             var students = await _studentRepo.GetAllStudentsAsync();
             return View("StudentList", students);
